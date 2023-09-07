@@ -7,7 +7,7 @@ export const AppContainer = styled.div`
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: ${props => props.bgColor};
+  background-color: ${props => (props.isDarkTheme ? '#000000' : '#f0f0f0')};
 `
 
 export const LoginFormContainer = styled.form`

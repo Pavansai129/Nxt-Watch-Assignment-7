@@ -1,6 +1,7 @@
 import {Component} from 'react'
 import {Redirect} from 'react-router-dom'
 import Cookies from 'js-cookie'
+
 import {
   AppContainer,
   LoginFormContainer,
@@ -15,13 +16,13 @@ import {
   ErrorMsgContainer,
   ErrorMsg,
 } from './styledComponents'
+import NxtWatchContext from '../../context/NxtWatchContext'
 
 class Login extends Component {
   state = {
     username: '',
     password: '',
     showPassword: false,
-    isDarkTheme: false,
     showErrorMsg: false,
     errorMsg: '',
   }
@@ -64,70 +65,77 @@ class Login extends Component {
   }
 
   render() {
-    const {
-      username,
-      password,
-      showPassword,
-      isDarkTheme,
-      showErrorMsg,
-      errorMsg,
-    } = this.state
-    const accessToken = Cookies.get('jwt_token')
-    if (accessToken !== undefined) {
-      return <Redirect to="/" />
-    }
-    const appBgColor = isDarkTheme ? '#0f0f0f' : '##f9f9f9'
-    const formBgColor = isDarkTheme ? '#0f0f0f' : '##f9f9f9'
-    const textColor = isDarkTheme ? '#f9f9f9' : '#475569'
-    const passwordText = showPassword ? 'text' : 'password'
-    const appLogo = isDarkTheme
-      ? 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-dark-theme-img.png'
-      : 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png'
     return (
-      <>
-        <AppContainer bgColor={appBgColor}>
-          <LoginFormContainer
-            bgColor={formBgColor}
-            onSubmit={this.onSubmitForm}
-          >
-            <LogoContainer>
-              <NxtWatchLogo src={appLogo} alt="Nxt Watch logo" />
-            </LogoContainer>
-            <Container>
-              <Label id="username" color={textColor}>
-                USERNAME
-              </Label>
-              <UserInput
-                id="username"
-                type="text"
-                value={username}
-                placeholder="Username"
-                onChange={this.onChangeUsername}
-              />
-            </Container>
-            <Container>
-              <Label id="password" color={textColor}>
-                PASSWORD
-              </Label>
-              <UserInput
-                id="password"
-                type={passwordText}
-                value={password}
-                placeholder="Password"
-                onChange={this.onChangePassword}
-              />
-            </Container>
-            <ShowPasswordContainer>
-              <CheckBox type="checkbox" onChange={this.onChangeShowPassword} />
-              <Label color={textColor}>Show Password</Label>
-            </ShowPasswordContainer>
-            <LoginButton type="submit">Login</LoginButton>
-            <ErrorMsgContainer>
-              {showErrorMsg && <ErrorMsg>*{errorMsg}</ErrorMsg>}
-            </ErrorMsgContainer>
-          </LoginFormContainer>
-        </AppContainer>
-      </>
+      <NxtWatchContext.Consumer>
+        {value => {
+          const {isDarkTheme} = value
+          const {
+            username,
+            password,
+            showPassword,
+            showErrorMsg,
+            errorMsg,
+          } = this.state
+          const accessToken = Cookies.get('jwt_token')
+          if (accessToken !== undefined) {
+            return <Redirect to="/" />
+          }
+
+          const formBgColor = isDarkTheme ? '#0f0f0f' : '##f9f9f9'
+          const textColor = isDarkTheme ? '#f9f9f9' : '#475569'
+          const passwordText = showPassword ? 'text' : 'password'
+          const appLogo = isDarkTheme
+            ? 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-dark-theme-img.png'
+            : 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png'
+          return (
+            <AppContainer isDarkTheme>
+              <LoginFormContainer
+                bgColor={formBgColor}
+                onSubmit={this.onSubmitForm}
+              >
+                <LogoContainer>
+                  <NxtWatchLogo src={appLogo} alt="Nxt Watch logo" />
+                </LogoContainer>
+                <Container>
+                  <Label id="username" color={textColor}>
+                    USERNAME
+                  </Label>
+                  <UserInput
+                    id="username"
+                    type="text"
+                    value={username}
+                    placeholder="Username"
+                    onChange={this.onChangeUsername}
+                  />
+                </Container>
+                <Container>
+                  <Label id="password" color={textColor}>
+                    PASSWORD
+                  </Label>
+                  <UserInput
+                    id="password"
+                    type={passwordText}
+                    value={password}
+                    placeholder="Password"
+                    onChange={this.onChangePassword}
+                  />
+                </Container>
+                <ShowPasswordContainer>
+                  <CheckBox
+                    type="checkbox"
+                    onChange={this.onChangeShowPassword}
+                  />
+                  <Label color={textColor}>Show Password</Label>
+                </ShowPasswordContainer>
+                <LoginButton type="submit">Login</LoginButton>
+                <ErrorMsgContainer>
+                  {showErrorMsg && <ErrorMsg>*{errorMsg}</ErrorMsg>}
+                </ErrorMsgContainer>
+              </LoginFormContainer>
+            </AppContainer>
+          )
+        }}
+      </NxtWatchContext.Consumer>
     )
   }
 }

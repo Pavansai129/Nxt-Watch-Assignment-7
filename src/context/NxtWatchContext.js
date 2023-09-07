@@ -1,7 +1,9 @@
 import React from 'react'
 
-const NxtWatch = React.creatContext({
+const NxtWatchContext = React.createContext({
+  isDarkTheme: false,
   videosList: [],
+  changeTheme: () => {},
 })
 
-export default NxtWatch
+export default NxtWatchContext
